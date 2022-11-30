@@ -1,0 +1,44 @@
+import requests
+from bs4 import BeautifulSoup
+
+
+def pjsk_crawler():
+    resp = requests.get(URL)
+    if resp.status_code != 200:
+        print('Invalid url:', resp.url)
+    soup = BeautifulSoup(resp.text, "html.parser")
+
+    music_datas = soup.find_all("tr", "target_music")
+    # print(music_datas[100])
+    for music_data in music_datas:
+        # print(music_data)
+        song_name = music_data.find("td", "song_name").text
+        # print(song_name)
+        unit = music_data.find_all("td")[1].text
+        time = music_data.find_all("td")[2].text
+        master_lv = music_data.find_all("td")[3].text
+        master_combo = music_data.find_all("td")[8].text
+        expert_lv = music_data.find_all("td")[4].text
+        expert_combo = music_data.find_all("td")[9].text
+        printdata(song_name, unit, time, master_lv, master_combo, expert_lv, expert_combo)
+
+    print("There are " + str(len(music_datas)) + " song_names in the website.")
+
+
+def printdata(song_name, unit, time, master_lv, master_combo, expert_lv, expert_combo):
+    data = {
+        'song_name': song_name,
+        'unit': unit,
+        'time': time,
+        'master_lv': master_lv,
+        'master_combo': master_combo,
+        'expert_lv': expert_lv,
+        'expert_combo': expert_combo,
+    }
+    print(data)
+
+
+if __name__ == '__main__':
+    URL = 'https://appmedia.jp/pjsekai/5298052'
+    # filename = 'PTT_Gossiping.json'
+    pjsk_crawler()
